@@ -1,0 +1,33 @@
+# VS
+.vs/
+**/.vs/
+*.user
+*.suo
+
+# Build output
+bin/
+obj/
+[Bb]uild/
+**/bin/
+**/obj/
+
+# MAUI/Android/iOS artifacts
+*.apk
+*.aab
+*.apks
+*.keystore
+*.pfx
+*.cer
+*.mobileprovision
+*.ipa
+
+# Tools
+*.vsidx
+*.lock.json
+
+# Logs
+*.log
+
+# Rider/VS Code (optional)
+.idea/
+.vscode/
