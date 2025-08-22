@@ -30,13 +30,25 @@ public partial class TermDetailPage : ContentPage
 			EndDate = DateTime.Today.AddMonths(6)
 		};
 
-		Title = $"Edit Term: {_term.Title}";
 		TitleEntry.Text = _term.Title;
 		StartPicker.Date = _term.StartDate == default ? DateTime.Today : _term.StartDate;
 		EndPicker.Date = _term.EndDate == default ? DateTime.Today.AddMonths(6) : _term.EndDate;
+
+		await LoadCoursesAsync();
     }
 
-	private async void OnSave(object sender, EventArgs e)
+	private async Task LoadCoursesAsync()
+	{
+		var list = await App.Db.GetCoursesForTermAsync(_term.Id);
+		CoursesList.ItemsSource = list.OrderBy(c => c.StartDate).ToList();
+
+		var count = list.Count;
+		CourseCountLabel.Text = $"{count} / 6";
+		AddCourseBtn.IsEnabled = count < 6;
+    }
+
+
+    private async void OnSave(object sender, EventArgs e)
 	{
 		if (string.IsNullOrEmpty(TitleEntry.Text))
 		{
@@ -56,11 +68,39 @@ public partial class TermDetailPage : ContentPage
 
 		await App.Db.SaveTermAsync(_term);
 		await DisplayAlert("Success", "Term saved successfully.", "OK");
-		await Navigation.PopAsync();
+		//await Navigation.PopAsync();
     }
 
 	private async void OnBack(object sender, EventArgs e)
 	{
 		await Navigation.PopAsync();
+    }
+
+	private async void OnAddCourse(object sender, EventArgs e)
+	{
+		var c = new Course
+		{
+			TermId = _term.Id,
+			Title = "New Course",
+			StartDate = _term.StartDate,
+			EndDate = _term.EndDate,
+			DueDate = _term.EndDate,
+			Status = CourseStatus.PlanToTake,
+			InstructorName = "",
+			InstructorPhone = "",
+			InstructorEmail = "",
+		};
+
+		await App.Db.SaveCourseAsync(c);
+		await Navigation.PushAsync(new CourseDetailPage(c.Id));
+    }
+
+	private async void OnCourseSelected(object sender, SelectionChangedEventArgs e)
+	{
+		if (e.CurrentSelection.FirstOrDefault() is Course c)
+		{
+			await Navigation.PushAsync(new CourseDetailPage(c.Id));
+			((CollectionView)sender).SelectedItem = null;
+        }
     }
 }

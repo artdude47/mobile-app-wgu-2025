@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WGU.C971.Pages.CourseDetailPage"
+             Title="CourseDetailPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <Entry x:Name="TitleEntry" Placeholder="Course title"/>
+
+            <Grid ColumnDefinitions="*,*">
+                <VerticalStackLayout>
+                    <Label Text="Start date"/>
+                    <DatePicker x:Name="StartPicker"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="End date"/>
+                    <DatePicker x:Name="EndPicker"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <VerticalStackLayout>
+                <Label Text="Due date"/>
+                <DatePicker x:Name="DuePicker"/>
+            </VerticalStackLayout>
+
+            <VerticalStackLayout>
+                <Label Text="Status"/>
+                <Picker x:Name="StatusPicker">
+                    <Picker.Items>
+                        <x:String>InProgress</x:String>
+                        <x:String>Completed</x:String>
+                        <x:String>Dropped</x:String>
+                        <x:String>PlanToTake</x:String>
+                    </Picker.Items>
+                </Picker>
+            </VerticalStackLayout>
+
+            <Label Text="Instructor" FontAttributes="Bold"/>
+            <Entry x:Name="InstrName"  Placeholder="Name"/>
+            <Entry x:Name="InstrPhone" Placeholder="Phone" Keyboard="Telephone"/>
+            <Entry x:Name="InstrEmail" Placeholder="Email" Keyboard="Email"/>
+
+            <Editor x:Name="NotesEditor" Placeholder="Optional notes" AutoSize="TextChanges"/>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Text="Share Notes" Clicked="OnShareNotes"/>
+                <Button Text="Save" Clicked="OnSave" Grid.Column="1"/>
+            </Grid>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Text="Notify Start" Clicked="OnNotifyStart"/>
+                <Button Text="Notify End"   Clicked="OnNotifyEnd" Grid.Column="1"/>
+            </Grid>
+
+            <Button Text="Delete Course" Clicked="OnDelete"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
