@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WGU.C971.Pages.TermsPage"
+             Title="TermsPage">
+    
+    <VerticalStackLayout Padding="16" Spacing="12">
+        <Button Text="Add Term" Clicked="OnAdd" />
+        <CollectionView x:Name="TermsList"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="8" ColumnDefinitions="*, Auto">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Text="{Binding StartDate, StringFormat='Start: {0:d}'}"/>
+                            <Label Text="{Binding EndDate, StringFormat='End: {0:d}'}"/>
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1"
+                                Text="Delete"
+                                CommandParameter="{Binding}"
+                                Clicked="OnDelete"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </VerticalStackLayout>
+</ContentPage>

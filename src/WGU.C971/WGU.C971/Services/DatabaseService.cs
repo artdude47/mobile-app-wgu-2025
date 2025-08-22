@@ -20,7 +20,7 @@ namespace WGU.C971.Services
             await _db.CreateTableAsync<Assessments>();
         }
 
-        public Task<List<Term>> GetTermAsync() => _db.Table<Term>().ToListAsync();
+        public Task<List<Term>> GetTermsAsync() => _db.Table<Term>().ToListAsync();
         public Task<Term?> GetTermAsync(int id) => _db.FindAsync<Term>(id);
         public Task<int> SaveTermAsync(Term t) => t.Id == 0 ? _db.InsertAsync(t) : _db.UpdateAsync(t);
         public Task<int> DeleteTermAsync(Term t) => _db.DeleteAsync(t);

@@ -31,13 +31,17 @@ public partial class MainPage : ContentPage
 	{
 		try
 		{
-			var terms = await App.Db.GetTermAsync();
+			var terms = await App.Db.GetTermsAsync();
 			await DisplayAlert("DB Ping", $"Terms in DB: {terms.Count}", "OK");
         }
 		catch (Exception ex)
 		{
 			await DisplayAlert("DB Ping Error", ex.Message, "OK");
         }
+    }
 
+	private async void OnOpenTerms(object sender, EventArgs e)
+	{
+		await Navigation.PushAsync(new WGU.C971.Pages.TermsPage());
     }
 }

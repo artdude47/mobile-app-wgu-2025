@@ -16,5 +16,7 @@
                Text="Status: Ready"
                FontSize="14"
                HorizontalOptions="Center" />
+        <Button Text="Manage Terms"
+                Clicked="OnOpenTerms" />
     </VerticalStackLayout>
 </ContentPage>
