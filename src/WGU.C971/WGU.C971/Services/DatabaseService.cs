@@ -35,6 +35,8 @@ namespace WGU.C971.Services
 
         public Task<List<Assessments>> GetAssessmentsForCourseAsync(int courseId) =>
             _db.Table<Assessments>().Where(a => a.CourseId == courseId).ToListAsync();
+
+        public Task<Assessments?> GetAssessmentAsync(int id) => _db.FindAsync<Assessments>(id);
         public Task<int> SaveAssessmentAsync(Assessments a) => a.Id == 0 ? _db.InsertAsync(a) : _db.UpdateAsync(a);
         public Task<int> DeleteAssessmentAsync(Assessments a) => _db.DeleteAsync(a);
         public async Task<int> CountAssessmentsByTypeAsync(int courseId, AssessmentType type) =>

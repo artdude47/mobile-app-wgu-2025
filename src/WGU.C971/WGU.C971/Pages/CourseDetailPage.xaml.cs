@@ -24,6 +24,69 @@ public partial class CourseDetailPage : ContentPage
 		base.OnAppearing();
 		_course = await App.Db.GetCourseAsync(_courseId) ?? new Course();
 		BindToUi();
+        await LoadAssessmentsAsync();
+    }
+
+    private async Task LoadAssessmentsAsync()
+    {
+        var list = await App.Db.GetAssessmentsForCourseAsync(_course.Id);
+        AssessList.ItemsSource = list;
+
+        AssessCountLabel.Text = $"{list.Count} / 2";
+
+        bool hasObj = list.Any(a => a.Type == AssessmentType.Objective);
+        bool hasPerf = list.Any(a => a.Type == AssessmentType.Performance);
+
+        AddObjBtn.IsEnabled = !hasObj;
+        AddPerfBtn.IsEnabled = !hasPerf;
+    }
+
+    private async void OnAddObjective(object sender, EventArgs e)
+    {
+        var a = new Assessments
+        {
+            CourseId = _course.Id,
+            Title = "New Objective Assessment",
+            Type = AssessmentType.Objective,
+            StartDate = _course.StartDate,
+            EndDate = _course.EndDate
+        };
+        await App.Db.SaveAssessmentAsync(a);
+        await Navigation.PushAsync(new AssessmentDetailPage(a.Id));
+    }
+
+    private async void OnAddPerformance(object sender, EventArgs e)
+    {
+        var a = new Assessments
+        {
+            CourseId = _course.Id,
+            Title = "New Performance Assessment",
+            Type = AssessmentType.Performance,
+            StartDate = _course.StartDate,
+            EndDate = _course.EndDate
+        };
+        await App.Db.SaveAssessmentAsync(a);
+        await Navigation.PushAsync(new AssessmentDetailPage(a.Id));
+    }
+
+    private async void OnAssessmentSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is Assessments a)
+        {
+            await Navigation.PushAsync(new AssessmentDetailPage(a.Id));
+            AssessList.SelectedItem = null;
+        }
+    }
+
+    private async void OnDeleteAssessment(object sender, EventArgs e)
+    {
+        if ((sender as Button)?.CommandParameter is Assessments a)
+        {
+            var ok = await DisplayAlert("Delete assessment?", $"Delete '{a.Title}'?", "Delete", "Cancel");
+            if (!ok) return;
+            await App.Db.DeleteAssessmentAsync(a);
+            await LoadAssessmentsAsync();
+        }
     }
 
     private void BindToUi()

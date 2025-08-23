@@ -59,6 +59,34 @@
                 <Switch x:Name="EndAlertSwitch" Toggled="OnEndAlertToggled"/>
             </HorizontalStackLayout>
 
+            <BoxView HeightRequest="1" Opacity="0.2" />
+            <Label Text="Assessments" FontAttributes="Bold" />
+
+            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <Label x:Name="AssessCountLabel" Text="0 / 2"/>
+                <HorizontalStackLayout Grid.Column="1" Spacing="8">
+                    <Button x:Name="AddObjBtn"  Text="Add Objective"   Clicked="OnAddObjective"/>
+                    <Button x:Name="AddPerfBtn" Text="Add Performance" Clicked="OnAddPerformance"/>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <CollectionView x:Name="AssessList"
+                SelectionMode="Single"
+                SelectionChanged="OnAssessmentSelected">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="8" ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto">
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Text="{Binding Type}" Grid.Row="1"/>
+                            <Button Grid.Column="1"
+                        Text="Delete"
+                        CommandParameter="{Binding}"
+                        Clicked="OnDeleteAssessment"/>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
             <Button Text="Delete Course" Clicked="OnDelete"/>
         </VerticalStackLayout>
     </ScrollView>

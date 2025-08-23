@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="WGU.C971.Pages.AssessmentDetailPage"
+             Title="Edit Assessment">
+
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Label Text="Type" />
+            <Entry x:Name="TypeEntry" IsReadOnly="True"/>
+
+            <Entry x:Name="TitleEntry" Placeholder="Assessment Title"/>
+
+            <Grid ColumnDefinitions="*,*">
+                <VerticalStackLayout>
+                    <Label Text="Start date"/>
+                    <DatePicker x:Name="StartPicker"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="End date"/>
+                    <DatePicker x:Name="EndPicker"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Start Alert"/>
+                <Switch x:Name="StartAlertSwitch" Toggled="OnStartAlertToggled"/>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="End Alert" />
+                <Switch x:Name="EndAlertSwitch" Toggled="OnEndAlertToggled"/>
+            </HorizontalStackLayout>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Text="Save" Clicked="OnSave"/>
+                <Button Text="Back" Clicked="OnBack" Grid.Column="1"/>
+            </Grid>
+
+            <Button Text="Delete Assessment" Clicked="OnDelete" BackgroundColor="Red" TextColor="White"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
