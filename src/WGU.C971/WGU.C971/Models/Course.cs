@@ -19,5 +19,10 @@ namespace WGU.C971.Models
         [NotNull] public string InstructorPhone { get; set; } = "";
 
         public string? Notes { get; set; }
+
+        public bool StartAlertEnabled { get; set; }
+        public bool EndAlertEnabled { get; set; }
+        public int? StartAlertId { get; set; }
+        public int? EndAlertId { get; set; }
     }
 }

@@ -49,10 +49,15 @@
                 <Button Text="Save" Clicked="OnSave" Grid.Column="1"/>
             </Grid>
 
-            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
-                <Button Text="Notify Start" Clicked="OnNotifyStart"/>
-                <Button Text="Notify End"   Clicked="OnNotifyEnd" Grid.Column="1"/>
-            </Grid>
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="Start Alert"/>
+                <Switch x:Name="StartAlertSwitch" Toggled="OnStartAlertToggled"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Spacing="12">
+                <Label Text="End Alert" />
+                <Switch x:Name="EndAlertSwitch" Toggled="OnEndAlertToggled"/>
+            </HorizontalStackLayout>
 
             <Button Text="Delete Course" Clicked="OnDelete"/>
         </VerticalStackLayout>

@@ -40,6 +40,9 @@ public partial class CourseDetailPage : ContentPage
         InstrEmail.Text = _course.InstructorEmail;
 
         NotesEditor.Text = _course.Notes;
+
+        StartAlertSwitch.IsToggled = _course.StartAlertEnabled;
+        EndAlertSwitch.IsToggled = _course.EndAlertEnabled;
     }
 
     private bool IsValidEmail(string? email)
@@ -70,7 +73,8 @@ public partial class CourseDetailPage : ContentPage
         _course.EndDate = EndPicker.Date;
         _course.DueDate = DuePicker.Date;
 
-        _course.Status = Enum.Parse<CourseStatus>((string)StatusPicker.SelectedItem);
+        var statusText = (string?)StatusPicker.SelectedItem ?? CourseStatus.PlanToTake.ToString();
+        _course.Status = Enum.Parse<CourseStatus>(statusText);
 
         _course.InstructorName = InstrName.Text!.Trim();
         _course.InstructorPhone = InstrPhone.Text!.Trim();
@@ -79,6 +83,26 @@ public partial class CourseDetailPage : ContentPage
         _course.Notes = NotesEditor.Text;
 
         await App.Db.SaveCourseAsync(_course);
+
+        if (_course.StartAlertEnabled)
+        {
+            if (_course.StartAlertId.HasValue) NotificationService.Cancel(_course.StartAlertId.Value);
+
+            _course.StartAlertId = await NotificationService.ScheduleAsync(
+                $"Course Starts: {_course.Title}", "Good Luck!", _course.StartDate);
+        }
+
+        if (_course.EndAlertEnabled)
+        {
+            if (_course.EndAlertId.HasValue)
+                NotificationService.Cancel(_course.EndAlertId.Value);
+
+            _course.EndAlertId = await NotificationService.ScheduleAsync(
+                $"Course Ends: {_course.Title}", "Deadline is today!", _course.EndDate);
+        }
+
+        await App.Db.SaveCourseAsync(_course);
+
         await DisplayAlert("Saved", "Course saved.", "OK");
         await Navigation.PopAsync();
     }
@@ -99,11 +123,49 @@ public partial class CourseDetailPage : ContentPage
         }
     }
 
-    private async void OnNotifyStart(object sender, EventArgs e)
-        => await NotificationService.ScheduleAsync($"Course starts: {_course.Title}", "Good luck!", _course.StartDate);
+    private async void OnStartAlertToggled(object sender, ToggledEventArgs e)
+    {
+        if (e.Value)
+        {
+            _course.StartAlertId = await NotificationService.ScheduleAsync(
+                $"Course Start: {_course.Title}", "Good Luck!", _course.StartDate);
+            _course.StartAlertEnabled = true;
+        }
+        else
+        {
+            if (_course.StartAlertId.HasValue)
+            {
+                NotificationService.Cancel(_course.StartAlertId.Value);
+            }
+            _course.StartAlertEnabled = false;
+            _course.StartAlertId = null;
+        }
+        await App.Db.SaveCourseAsync(_course);
+    }
 
-    private async void OnNotifyEnd(object sender, EventArgs e)
-        => await NotificationService.ScheduleAsync($"Course ends: {_course.Title}", "Deadline day!", _course.EndDate);
+    private async void OnEndAlertToggled(object sender, ToggledEventArgs e)
+    {
+        if (e.Value)
+        {
+            _course.EndAlertId = await NotificationService.ScheduleAsync(
+                $"Course End: {_course.Title}",
+                "Deadline is today!",
+                _course.EndDate);
+
+            _course.EndAlertEnabled = true;
+        }
+        else
+        {
+            if (_course.EndAlertId.HasValue)
+            {
+                NotificationService.Cancel(_course.EndAlertId.Value);
+            }
+            _course.EndAlertEnabled = false;
+            _course.EndAlertId = null;
+        }
+
+        await App.Db.SaveCourseAsync(_course);
+    }
 
     private async void OnDelete(object sender, EventArgs e)
     {

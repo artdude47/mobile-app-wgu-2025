@@ -10,8 +10,15 @@ namespace WGU.C971.Services
 
         private static bool IsAndroid => DeviceInfo.Platform == DevicePlatform.Android;
 
-        public static async Task ScheduleAsync(string title, string body, DateTime when)
+        public static void Cancel(int id)
         {
+            LocalNotificationCenter.Current.Cancel(id);
+        }
+
+        public static async Task<int> ScheduleAsync(string title, string body, DateTime when)
+        {
+            var id = _nextId++;
+
             if (!IsAndroid)
             {
 #if WINDOWS
@@ -21,7 +28,7 @@ namespace WGU.C971.Services
                       "Local notifications run on Android. Use the emulator.",
                       "OK"));
 #endif
-                return;
+                return id;
             }
 
 #if ANDROID
@@ -31,7 +38,7 @@ namespace WGU.C971.Services
                 status = await Permissions.RequestAsync<Permissions.PostNotifications>();
                 if (status != PermissionStatus.Granted)  
                 {
-                    return;
+                    return id;
                 }
             }
 #endif
@@ -40,7 +47,7 @@ namespace WGU.C971.Services
 
             var request = new NotificationRequest
             {
-                NotificationId = _nextId++,
+                NotificationId = id,
                 Title = title,
                 Description = body,
                 Schedule = new NotificationRequestSchedule
@@ -50,6 +57,7 @@ namespace WGU.C971.Services
                 },
             };
             await LocalNotificationCenter.Current.Show(request);
+            return id;
         }
     }
 }
