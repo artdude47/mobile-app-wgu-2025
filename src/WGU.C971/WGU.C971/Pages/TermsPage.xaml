@@ -2,10 +2,10 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="WGU.C971.Pages.TermsPage"
-             Title="TermsPage">
+             Title="Terms">
     
     <VerticalStackLayout Padding="16" Spacing="12">
-        <Button Text="Add Term" Clicked="OnAdd" />
+
         <CollectionView x:Name="TermsList"
                         SelectionMode="Single"
                         SelectionChanged="OnSelected">
@@ -20,10 +20,13 @@
                         <Button Grid.Column="1"
                                 Text="Delete"
                                 CommandParameter="{Binding}"
+                                TextColor="White"
+                                BackgroundColor="Red"
                                 Clicked="OnDelete"/>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        <Button Text="Add Term" Clicked="OnAdd" />
     </VerticalStackLayout>
 </ContentPage>

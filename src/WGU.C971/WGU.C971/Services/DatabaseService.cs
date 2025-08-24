@@ -6,15 +6,20 @@ namespace WGU.C971.Services
     public sealed class DatabaseService
     {
         private readonly SQLiteAsyncConnection _db;
+        private readonly string _dbPath;
 
         public DatabaseService()
         {
-            var path = Path.Combine(FileSystem.AppDataDirectory, "c971.db3");
-            _db = new SQLiteAsyncConnection(path);
+            _dbPath = Path.Combine(FileSystem.AppDataDirectory, "c971.db3");
+            _db = new SQLiteAsyncConnection(_dbPath);
+
         }
 
         public async Task InitAsync()
         {
+            System.Diagnostics.Debug.WriteLine($"[DB] Database path: {_dbPath}");
+            Console.WriteLine($"[DB] Database path: {_dbPath}");
+
             await _db.CreateTableAsync<Term>();
             await _db.CreateTableAsync<Course>();
             await _db.CreateTableAsync<Assessments>();

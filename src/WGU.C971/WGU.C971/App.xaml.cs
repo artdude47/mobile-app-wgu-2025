@@ -10,7 +10,9 @@ namespace WGU.C971
         public App()
         {
             InitializeComponent();
-            MainPage = new NavigationPage(new Pages.MainPage());
+            MainPage = new NavigationPage(new Pages.TermsPage());
+
+            MainThread.BeginInvokeOnMainThread(async () => await Db.InitAsync());
         }
     }
 }
