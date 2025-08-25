@@ -12,7 +12,11 @@ namespace WGU.C971.Services
 
         public static void Cancel(int id)
         {
-            LocalNotificationCenter.Current.Cancel(id);
+            try
+            {
+                LocalNotificationCenter.Current.Cancel(id);
+            }
+            catch { }
         }
 
         public static async Task<int> ScheduleAsync(string title, string body, DateTime when)
@@ -43,20 +47,30 @@ namespace WGU.C971.Services
             }
 #endif
 
-            var notifyTime = when < DateTime.Now.AddSeconds(2) ? DateTime.Now.AddSeconds(2) : when;
+            var localWhen = when.ToLocalTime();
+            var minFire = DateTime.Now.AddSeconds(5);
+            if (localWhen < minFire) localWhen = minFire;
 
             var request = new NotificationRequest
             {
                 NotificationId = id,
                 Title = title,
                 Description = body,
-                Schedule = new NotificationRequestSchedule
-                {
-                    NotifyTime = notifyTime,
+                Schedule =
+                    {
+                    NotifyTime = localWhen,
                     NotifyRepeatInterval = null
-                },
+                    }
             };
-            await LocalNotificationCenter.Current.Show(request);
+
+            try
+            {
+                await LocalNotificationCenter.Current.Show(request);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[NOTIF] Error scheduling notification: {ex}");
+            }
             return id;
         }
     }

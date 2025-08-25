@@ -11,7 +11,7 @@ public partial class CourseDetailPage : ContentPage
 {
 	private int _courseId;
 	private Course _course = new();
-
+    private bool _suppressToggleHandlers;
 
     public CourseDetailPage(int courseId)
 	{
@@ -104,8 +104,10 @@ public partial class CourseDetailPage : ContentPage
 
         NotesEditor.Text = _course.Notes;
 
+        _suppressToggleHandlers = true;
         StartAlertSwitch.IsToggled = _course.StartAlertEnabled;
         EndAlertSwitch.IsToggled = _course.EndAlertEnabled;
+        _suppressToggleHandlers = false;
     }
 
     private bool IsValidEmail(string? email)
@@ -146,26 +148,6 @@ public partial class CourseDetailPage : ContentPage
         _course.Notes = NotesEditor.Text;
 
         await App.Db.SaveCourseAsync(_course);
-
-        if (_course.StartAlertEnabled)
-        {
-            if (_course.StartAlertId.HasValue) NotificationService.Cancel(_course.StartAlertId.Value);
-
-            _course.StartAlertId = await NotificationService.ScheduleAsync(
-                $"Course Starts: {_course.Title}", "Good Luck!", _course.StartDate);
-        }
-
-        if (_course.EndAlertEnabled)
-        {
-            if (_course.EndAlertId.HasValue)
-                NotificationService.Cancel(_course.EndAlertId.Value);
-
-            _course.EndAlertId = await NotificationService.ScheduleAsync(
-                $"Course Ends: {_course.Title}", "Deadline is today!", _course.EndDate);
-        }
-
-        await App.Db.SaveCourseAsync(_course);
-
         await DisplayAlert("Saved", "Course saved.", "OK");
         await Navigation.PopAsync();
     }
@@ -188,6 +170,7 @@ public partial class CourseDetailPage : ContentPage
 
     private async void OnStartAlertToggled(object sender, ToggledEventArgs e)
     {
+        if (_suppressToggleHandlers) return;
         if (e.Value)
         {
             _course.StartAlertId = await NotificationService.ScheduleAsync(
@@ -208,6 +191,7 @@ public partial class CourseDetailPage : ContentPage
 
     private async void OnEndAlertToggled(object sender, ToggledEventArgs e)
     {
+        if (_suppressToggleHandlers) return;
         if (e.Value)
         {
             _course.EndAlertId = await NotificationService.ScheduleAsync(

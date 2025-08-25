@@ -58,21 +58,6 @@ public partial class AssessmentDetailPage : ContentPage
 		_a.EndDate = EndPicker.Date;
 
 		await App.Db.SaveAssessmentAsync(_a);
-
-		if (_a.StartAlertEnabled)
-		{
-			if (_a.StartAlertId.HasValue) NotificationService.Cancel(_a.StartAlertId.Value);
-			_a.StartAlertId = await NotificationService.ScheduleAsync(
-				$"Assessment Starts: {_a.Title}", "Good Luck!", _a.StartDate);
-        }
-		if (_a.EndAlertEnabled)
-		{
-			if (_a.EndAlertId.HasValue) NotificationService.Cancel(_a.EndAlertId.Value);
-			_a.EndAlertId = await NotificationService.ScheduleAsync(
-				$"Assessment Ends: {_a.Title}", "Don't forget!", _a.EndDate);
-        }
-
-		await App.Db.SaveAssessmentAsync(_a);
 		await DisplayAlert("Success", "Assessment saved.", "OK");
 		await Navigation.PopAsync();
     }
