@@ -1,70 +1,69 @@
-# Course Tracker App
+# Academic Planner - .NET MAUI Course Tracker
 
-A mobile course management application developed with **.NET MAUI** for a course at WGU. The app allows students to manage academic terms, courses, and assessments while receiving local notifications for important dates.
-
----
-
-## Overview
-This project simulates a lightweight student course tracking system where users can:
-- Manage **academic terms** with start and end dates
-- Add and view up to **six courses** per term
-- For each course:
-  - View and edit **details** (title, dates, instructor info, status, and notes)
-  - Add up to **two assessments** (one Objective and one Performance)
-  - Toggle **start/end notifications** for upcoming deadlines
-  - Share notes externally via system share features
-- Automatically validate dates
-- Persist all data locally via SQLite
+A cross-platform mobile application designed to help students track academic terms, courses, and assessments. Built with **.NET MAUI** and **C#**, featuring local notifications and a relational SQLite database.
 
 ---
 
 ## Features
 
-| Feature | Description |
-|----------|-------------|
-| **Terms Management** | Add, edit, and delete academic terms with validation. |
-| **Courses** | Add up to six courses per term with instructor info and notes. |
-| **Assessments** | Add up to two assessments per course (Objective & Performance). |
-| **Local Notifications** | Android notifications for course start and end dates. |
-| **Data Persistence** | Uses SQLite via async CRUD operations. |
-| **Sharing** | Share notes via native OS share features. |
-| **Validation** | Prevents empty fields or invalid dates. |
+### Academic Management
+- **Term & Course Tracking:** Manage multiple academic terms, with support for up to **six courses** per term.
+- **Assessment Tracking:** Track objective and performance assessments for each course with start and end dates.
+- **Detailed Notes:** Store and edit instructor contact information (email, phone) and course notes.
+
+### Mobile Engineering
+- **Native Notifications:** Android-integrated push notifications for assessment start/end dates using platform-specific permission handling.
+- **Asynchronous Data Layer:** Non-blocking SQLite database operations to ensure a smooth, lag-free UI during data saves and loads.
+- **Data Persistence:** All user data is locally persisted on the device, ensuring offline accessibility.
+
+---
 
 ## Tech Stack
 
-- **Framework:** .NET 9 / .NET MAUI
+- **Framework:** .NET MAUI (.NET 9)
 - **Language:** C#
-- **Database:** SQLite (via 'sqlite-net-pcl')
+- **Database:** SQLite (via `sqlite-net-pcl`)
 - **Notifications:** Plugin.LocalNotification
-- **Platform Tested:** Android Emulator (Pixel 5, API 34)
-- **IDE:** Visual Studio 2022 Community Edition
+- **Architecture:** Event-Driven UI with Service-Repository Pattern
+- **Platform:** Android (Primary), Windows (Compatible)
+
+---
+
+## Architecture Highlights
+
+### Asynchronous Database Service
+Unlike basic synchronous apps, this project implements a fully asynchronous database layer using `SQLiteAsyncConnection`.
+- **Why it matters:** It prevents the Main Thread (UI) from freezing during I/O operations.
+- **Implementation:** All CRUD operations (e.g., `GetTermsAsync`, `SaveCourseAsync`) return `Task<T>` and are awaited by the UI.
+
+### Platform-Specific Conditional Compilation
+The app handles platform differences intelligently using preprocessor directives (`#if ANDROID`).
+- **Android:** Requests specific `PostNotifications` permissions at runtime before scheduling alerts.
+- **Windows:** Falls back gracefully with UI alerts for unsupported features, ensuring the app doesn't crash on different platforms.
+
+### Relational Data Modeling
+The internal SQLite database uses a relational schema to maintain data integrity:
+- **Foreign Keys:** Courses are linked to Terms via `TermId`, and Assessments are linked to Courses via `CourseId`.
+- **Indexed Lookups:** Fields like `CourseId` are decorated with `[Indexed]` attributes to optimize query performance.
 
 ---
 
 ## Getting Started
 
-### Prerequisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/en-us/download)
-- [Visual Studio 2022](https://visualstudio.microsoft.com/) with **.NET MAUI workload** installed.
+### 1. Prerequisites
+- .NET 9 SDK
+- Visual Studio 2022 (with .NET MAUI workload installed)
 
-### Setup
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/artdude47/mobile-app-wgu-2025.git
-   cd wgu-c971
-   ```
-2. Open the solution in Visual Studio
-3. Set the startup project to **WGU.C971** and target **Android or Windows**
-4. Run the app
+### 2. Installation
+```bash
+git clone [https://github.com/artdude47/mobile-app-wgu-2025.git](https://github.com/artdude47/mobile-app-wgu-2025.git)
+cd wgu-c971
+```
 
-## Testing
-Seeed data is automatically created for one term, one course, and two assessments. You can delete or modify these freely to test CRUD functions.
+### 3. Running the App
+1. Open `WGU.C971.sln` in Visual Studio
+2. Select an **Android Emulator** (e.g., Pixel 5 - API 34) as the debug target.
+3. Press **F5** to build and deploy.
 
-## Screens
-- **Terms Page** - List of all academic terms and option to add new ones
-- **Term Detail** - Show courses within the term
-- **Course Detail** - Displays course information, instructor details, notes, and toggles for alerts
-- **Assessment Detail** - Displays assessment details for the selected course
-
-
+*Note: The app automatically initializes the SQLite database at `FileSystem.AppDataDirectory` on the first launch.*
 
