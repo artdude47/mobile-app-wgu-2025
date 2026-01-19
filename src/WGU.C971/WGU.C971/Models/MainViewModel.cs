@@ -10,6 +10,9 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     string statusText = "Status: Ready";
 
+    [ObservableProperty]
+    bool isBusy;
+
     public MainViewModel(DatabaseService dbService)
     {
         _dbService = dbService;
@@ -18,6 +21,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task PingDb()
     {
+        if (IsBusy)
+            return;
+
+        IsBusy = true;
+        statusText = "Connecting...";
+
         try
         {
             StatusText = "Connecting..."; 
@@ -29,6 +38,10 @@ public partial class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             StatusText = $"Error: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
         }
     }
 }

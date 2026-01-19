@@ -12,6 +12,15 @@
         <Button 
             Text="Ping Database"
             Command="{Binding PingDbCommand}" />
+		<VerticalStackLayout Padding="24" Spacing="16">
+    <ActivityIndicator IsRunning="{Binding IsBusy}" 
+                       IsVisible="{Binding IsBusy}" 
+                       Color="Blue"
+                       HeightRequest="50" />
+
+    <Button Text="Ping Database" Command="{Binding PingDbCommand}" />
+    
+    </VerticalStackLayout>
         <Label x:Name="StatusLabel"
                Text="Status: Ready"
                FontSize="14"
