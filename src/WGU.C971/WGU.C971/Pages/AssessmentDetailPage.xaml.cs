@@ -53,7 +53,13 @@ public partial class AssessmentDetailPage : ContentPage
 			return;
         }
 
-		_a.Title = TitleEntry.Text?.Trim();
+		if (EndPicker.Date < StartPicker.Date)
+		{
+			await DisplayAlert("Validation error", "End date must be after or equal to start date.", "OK");
+			return;
+        }
+
+        _a.Title = TitleEntry.Text?.Trim();
 		_a.StartDate = StartPicker.Date;
 		_a.EndDate = EndPicker.Date;
 
