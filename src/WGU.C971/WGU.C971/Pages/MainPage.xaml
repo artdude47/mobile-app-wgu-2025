@@ -11,7 +11,7 @@
             HorizontalOptions="Center" />
         <Button 
             Text="Ping Database"
-            Clicked="OnPingDb" />
+            Command="{Binding PingDbCommand}" />
         <Label x:Name="StatusLabel"
                Text="Status: Ready"
                FontSize="14"
